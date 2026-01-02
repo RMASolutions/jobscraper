@@ -1,0 +1,33 @@
+# Web Framework
+fastapi>=0.109.0
+uvicorn[standard]>=0.27.0
+
+# Database
+sqlalchemy[asyncio]>=2.0.0
+aioodbc>=0.5.0
+pyodbc>=5.1.0
+alembic>=1.13.0
+
+# LLM Providers
+google-generativeai>=0.4.0
+openai>=1.10.0
+anthropic>=0.18.0
+
+# Workflow Engine
+langgraph>=0.0.20
+
+# Browser Automation
+playwright>=1.41.0
+
+# Configuration
+pydantic>=2.5.0
+pydantic-settings>=2.1.0
+python-dotenv>=1.0.0
+
+# Utilities
+httpx>=0.26.0
+beautifulsoup4>=4.12.0
+
+# Development
+pytest>=8.0.0
+pytest-asyncio>=0.23.0

@@ -1,0 +1,36 @@
+ # 1. Copy environment file and add your Gemini API key
+  cp .env.example .env
+
+  # 2. Start SQL Server
+  docker-compose up -d
+
+  # 3. Create the database (local dev)
+  docker exec -it workflow_sqlserver /opt/mssql-tools/bin/sqlcmd \
+    -S localhost -U sa -P "YourStrong!Passw0rd" \
+    -Q "IF DB_ID('workflow_db') IS NULL CREATE DATABASE workflow_db;"
+
+  # 4. Create virtual environment
+  python -m venv .venv
+  source .venv/bin/activate  # or .venv\Scripts\activate on Windows
+
+  # 5. Install dependencies
+  pip install -r requirements.txt
+
+  # 6. Install Playwright browsers
+  playwright install chromium
+
+  # 7. Run the API
+  python run.py
+
+  # 8. Run the worker (scheduled in Azure as a job)
+  python run_worker.py
+
+  API Endpoints
+
+  - GET /health - Health check
+  - GET /api/workflows/types - List available workflow types
+  - POST /api/workflows/ - Create a workflow
+  - POST /api/executions/workflow/{id}/run - Execute a workflow
+  - GET /api/executions/{id} - Get execution status
+
+  The LLM layer is abstracted - switch providers by changing LLM_PROVIDER in .env.

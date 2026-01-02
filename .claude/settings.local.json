@@ -1,0 +1,10 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(find:*)",
+      "WebFetch(domain:connecting-expertise.com)",
+      "Bash(docker exec:*)",
+      "Bash(python3:*)"
+    ]
+  }
+}

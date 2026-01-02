@@ -1,0 +1,92 @@
+================================================================================
+AI WORKFLOW ENGINE - PROJECT MEMORY
+Last updated: 2024-12-24
+================================================================================
+
+## PROJECT GOAL
+Build a workflow automation system where AI agents can execute actions either
+periodically or event-based. Example use case: scraping freelance job platforms,
+filtering relevant jobs using AI, and sending summaries to admin.
+
+## KEY DECISIONS MADE WITH USER
+
+1. Tech Stack (confirmed by user):
+   - Playwright (web automation) - user agreed
+   - LangGraph (AI workflow orchestration) - user agreed
+   - FastAPI (API layer) - user agreed
+   - Azure SQL Database (database) - user agreed
+   - Gemini (LLM) - specifically Gemini 3.0 Flash (user updated config)
+   - LLM must be abstracted for future provider switching
+
+2. Deployment:
+   - Local development now with Docker container for SQL Server
+   - Will deploy to Azure later
+   - Azure will handle scheduling (no need for APScheduler/Celery Beat)
+   - Worker runs as Azure Container Apps Job; API runs as separate Container App with its own image
+
+3. What NOT to include:
+   - No APScheduler or Celery Beat (Azure handles scheduling)
+   - Keep it simple for now
+
+## WHAT WAS BUILT
+
+Complete project scaffold with:
+
+/src
+  /api          - FastAPI app with health, workflows, executions endpoints
+  /browser      - Playwright manager + common actions (login, scrape, etc.)
+  /core         - Config with pydantic-settings
+  /db           - SQLAlchemy async models (Workflow, Execution, Step)
+  /providers    - Abstract LLM interface + Gemini/OpenAI/Anthropic implementations
+  /workflows    - LangGraph base workflow + registry + job_scraper example
+
+Key files:
+- docker-compose.yml (SQL Server)
+- requirements.txt / pyproject.toml
+- run.py (uvicorn entry point)
+- .env.example
+
+## CURRENT STATE
+
+- All code written and ready
+- User was about to run docker-compose but hit Docker Desktop issue (500 error)
+- Fixed docker-compose.yml by removing deprecated 'version' attribute
+- User needs to restart Docker Desktop and try again
+
+## NEXT STEPS FOR USER
+
+1. Get Docker Desktop running properly
+2. docker-compose up -d
+3. Create .env with GEMINI_API_KEY
+4. pip install -r requirements.txt
+5. playwright install chromium
+6. python run.py
+
+## IMPORTANT NOTES
+
+- User changed gemini_model to "gemini-3.0-flash" in config.py (was gemini-2.0-flash)
+- LLM abstraction is important - user wants to be able to switch providers easily
+- The job_scraper workflow is an EXAMPLE - user will create their own workflows
+- Workflows should support: web UI interaction, API calls (email, Gemini), AI decisions
+
+## ARCHITECTURE NOTES
+
+The workflow system uses LangGraph's StateGraph:
+- BaseWorkflow class handles graph building and execution
+- Workflows define nodes (steps) and edges (transitions)
+- Conditional edges for branching logic
+- Memory checkpointer for state persistence
+- Registry pattern for discovering workflows
+
+Browser automation:
+- BrowserManager handles Playwright lifecycle
+- Storage state saved for session persistence across steps
+- Common actions in actions.py (login, scrape, click, etc.)
+
+## USER CONTEXT
+
+- User is on Windows with WSL2
+- Using Docker Desktop for Windows
+- Project path: /mnt/c/Users/merye/Documents/RMA/AI-projects/AIagents-POC2-claud
+- This appears to be a freelance/consulting project (RMA folder, freelance job scraping use case)
+================================================================================
